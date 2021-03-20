@@ -1,0 +1,140 @@
+manager <- c(1, 2, 3, 4, 5)
+date <- c("10/24/08", "10/28/08", "10/1/08", "10/12/08", "5/1/09")
+country <- c("US", "US", "UK", "UK", "UK")
+gender <- c("M", "F", "F", "M", "F")
+age <- c(32, 45, 25, 39, 99) # 99 代表缺失
+q1 <- c(5, 3, 3, 3, 2)
+q2 <- c(4, 5, 5, 3, 2) 
+q3 <- c(5, 2, 5, 4, 1)
+q4 <- c(5, 5, 5, NA, 2)
+q5 <- c(5, 5, 2, NA, 1)
+leadership <- data.frame(manager, date, country, gender, age, q1, q2, q3, q4, q5, stringsAsFactors=FALSE)
+leadership$age[leadership$age==99] <- NA
+
+# leadership$age_category[leadership$age>60] <- "Elder"
+# leadership$age_category[leadership$age>=30&leadership$age<=60] <- "Mid"
+# leadership$age_category[leadership$age<30] <- "Young"
+
+### 变量重命名
+# 1.
+# install.packages("reshape")
+library(reshape)
+leadership <- rename(leadership, c(manager="manager_id",date="collect_date"))
+# 2.
+names(leadership)
+names(leadership)[6:10] <- c("a","b","c","d","e")
+
+### 缺失值处理
+is.na(leadership$d) # 检测缺失值
+sum(leadership$d, na.rm=TRUE)
+leadership <- na.omit(leadership) # 删除具有缺失数据的行
+
+### 日期值处理
+# 日期至通常以字符串的形式输入到R中，然后转化为以数值形式存储的日期变量：as.Date(x,"format")
+# %d 数字日期(01-31)
+# %a 缩写星期名；%A 非缩写星期名
+# %m 数字月份(01-12)
+# %b 缩写月份；%B 非缩写月份
+# %y 两位数年份；%Y 四位数年份
+the_date = as.Date(c("2010-01-01")) # 默认输入格式 %Y-%m-%d
+leadership$collect_date <- as.Date(leadership$collect_date,"%m/%d/%y")
+leadership
+today = Sys.Date() # 返回当前日期
+today
+format(today, format="%Y %m %d %a") # 输出指定格式日期
+start = as.Date("1999-11-17")
+now = Sys.Date()
+days = now-start
+days
+days = difftime(now,start,unit="days")
+days
+
+### 数据类型转换
+# is.datatype()与as.datatype()
+# 
+
+### 数据排序
+ord = leadership[order(-leadership$age),] # 减号 降序
+ord
+ord = leadership[order(leadership$gender,leadership$age),] # 多变量排序
+ord
+
+### 数据集的合并
+# merge();cbind();rbind()
+
+### 数据集取子集
+# 1.
+sub = leadership[,c(3:5)]
+sub
+sub = leadership[,c("country","gender","age")]
+sub
+# 2.
+drop_fea = names(leadership) %in% c("country","gender","age")
+sub = leadership[,!drop_fea] # , can not need 
+sub
+# 3.
+sub = leadership[c(TRUE,FALSE),]
+sub
+# 4.
+leadership$e <- NULL
+leadership
+sub <- leadership[c(-9)]
+sub
+# 5.
+sub = subset(leadership, age<30, select = c("manager_id","gerder","age"))
+sub
+
+### 随机抽样
+# sample()
+leadership[sample(1:nrow(leadership),3,replace=FALSE),] # 无放回抽样
+
+### 使用SQL语句操作数据框
+# install.packages("sqldf") sqldf("sql语句")
+
+### 数据的整合和重构
+# 1.转置
+cars = mtcars[1:5,1:4] # 内置数据集
+t(cars)
+# 2.分类汇总
+options(digit=3) # 保留3位有效数字
+attach(mtcars)
+aggre = aggregate(mtcars,by=list(cyl,gear),FUN=mean,na.rm=TRUE) # by变量必须在一个列表中，即使只有一个变量
+aggre
+# 3.reshape pkg
+# melt and cast
+library(reshape2)
+d = read.table(header=TRUE,sep=" ",
+text = "
+ID TIME X1 X2
+1 1 5 6
+1 2 3 5
+2 1 6 1
+2 2 2 4
+"
+)
+m = melt(d, id=c("ID", "TIME"))
+dcast(m, ID+TIME~variable)
+dcast(m, ID~variable, mean)
+
+### 控制流：条件与循环
+# 1.
+score <-90
+if(score>80){
+  print("Good")
+}else{ # Forbidden：} enter
+  print("Not Good")
+}
+# 2.
+ifelse(score>80,print("Good"),print("Not Good"))
+# 3.
+feeling <- c("sad","afraid","hi")
+for (i in feeling){
+  print(
+    switch (i,
+      sad = "sad",
+      afraid = "afraid",
+      cat(i,"can't be recognized!")
+    )
+  )
+}
+

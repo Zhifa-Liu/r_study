@@ -1,0 +1,83 @@
+### 基本的数据结构
+# 1.向量：
+# 向量是用于存储数值型、字符型或逻辑型数据的一维数组
+# 执行组合功能的函数c()可以用来创建向量
+a<-c(1,2,5,3,6,-3)
+b<-c("one","two","three")
+c<-c(TRUE,FALSE,TRUE,FALSE,FALSE)
+d<-3 # 标量是只含一个元素的向量
+# 方括号[]用于访问向量中的元素
+a[c(2,4)]
+a[2:5]
+# 2.矩阵
+# 矩阵是一个二维数组，每个元素都拥有相同的模式
+# matrix()用于创建矩阵
+m = matrix(1:20, nrow=5, ncol=4, byrow=TRUE)
+cells <- c(1,2,3,4)
+rnames <- c("row_1","row_2")
+cnames <- c("col_1","col_2")
+mat = matrix(cells,nrow=2,ncol=2,byrow=TRUE,dimnames=list(rnames,cnames))
+# X[i,]、X[,j]、X[i,j]
+x<-matrix(1:10,nrow=2)
+x[2,]
+x[,2]
+x[1,3]
+x[1,c(4,5)]
+# 3.数组
+x<-c("x_1","x_2")
+y<-c("y_1","y_2","y_3")
+z<-c("z_1","z_2","z_3","z_4")
+z<-array(1:24,c(2,3,4),dimnames = list(x,y,z))
+z
+# 4.Data Frame
+# 数据框不同的列可以包含不同模式的数据，是R中最常处理的数据结构
+# data.frame()用于创建数据框
+patientID <- c(1, 2, 3, 4)
+age <- c(25, 34, 28, 52)
+diabetes <- c("Type1", "Type2", "Type1", "Type1")
+status <- c("Poor", "Improved", "Excellent", "Poor")
+patientdata <- data.frame(patientID, age, diabetes, status)
+patientdata[1:2] # 1、2列
+patientdata[c("patientID","status")]
+patientdata[2,] # 第二行
+patientdata$age # age列 (记号$用来选区一个给定数据框中的某个特定变量(列)，相当于一般计算机语言的'.')
+# attach()：可将数据框添加到R的搜索路径中，R在遇到一个变量名以后，不必再使用$
+plot(age,status)
+plot(patientdata$age,patientdata$status)
+attach(patientdata)
+plot(age,status)
+# detach()：可将数据框从搜索路径中移除
+# 当detach()造成数据对象重名时，原始对象将取得优先权
+# with()：attach()的替代
+with(patientdata,{
+  plot(patientID,age)
+  plot(patientID,status)
+})
+# 大括号{}之间的语句针对数据框patientdata执行，当只有一条语句时，大括号可以省略
+# 5.因子
+# 数据类型分为类别类别、有序类别、连续性数据
+# R：类别变量和有序变量称为因子，它们决定了数据的分析方式以及如何进行视觉呈现
+# 函数factor()以一个整数向量的形式存储类别值
+diabetes<-c('Type1','Type2','Type1','Type1')
+str(diabetes) # 输出一个R对象的结构
+diabetes<-factor(diabetes)
+str(diabetes)
+# 对于字符向量，因子的水平默认依字母顺序创建，可以通过levels选项来覆盖默认排序
+status<-factor(status,order=TRUE,levels=c('Poor','Improved','Excellent'))
+# 如果用字符向量创建数据框，R会将字符向量转换为因子
+# 6.列表
+g<-"My First List"
+h<-c(25,26,12,15)
+j<-matrix(1:10,nrow=5)
+mylist<-list(title=g,ages=h,j)
+# 7.注意
+# 对象名称的点(.)没有特殊意义，而美元符号($)却有着和其它语言中的句点的含义，即指定一个对象中的某些部分
+# R不提供多行注释或块注释功能
+# 将一个值赋给某个向量、矩阵、数组或列表中一个不存在的元素时，R将自动扩展这个数据结构以容纳新值
+z<-c(1,2,3)
+z[6]<-10
+z
+# R无标量，标量以单元素向量的形式出现
+# R的下标从1开始
+# 变量无法被声明
+
